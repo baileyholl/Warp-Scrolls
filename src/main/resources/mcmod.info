@@ -1,0 +1,16 @@
+[
+{
+  "modid": "warpScrolls",
+  "name": "Warp Scrolls",
+  "description": "Adds scrolls for one time teleportation",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["DrasticDemise"],
+  "credits": "DrasticDemise",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
