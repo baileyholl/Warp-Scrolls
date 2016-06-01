@@ -9,6 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -27,7 +29,7 @@ public class ItemWarpScroll extends Item{
         setRegistryName("itemWarpScroll");
         setMaxStackSize(1);
         setMaxDamage(1);
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.COMBAT);
         GameRegistry.register(this);
     }
 
@@ -36,21 +38,28 @@ public class ItemWarpScroll extends Item{
         if(!playerIn.isSneaking() && itemStackIn.getTagCompound().getIntArray("blockPos") != null){
             int[] positionArray = itemStackIn.getTagCompound().getIntArray("blockPos");
             try {
-                playerIn.teleportTo_(positionArray[0], positionArray[1], positionArray[2]);
-                itemStackIn.damageItem(1, playerIn);
-                //Just because I am scared of servers crashing
-                try {
-                    playerIn.playSound(SoundEvent.soundEventRegistry.getObject(new ResourceLocation("entity.endermen.teleport")), 2, 1);
-                }catch(Throwable t){}
+                if(itemStackIn.getTagCompound().getInteger("dim") == playerIn.dimension) {
+                    playerIn.attemptTeleport(positionArray[0], positionArray[1], positionArray[2]);
+                    itemStackIn.damageItem(1, playerIn);
+                    //Just because I am scared of servers crashing
+                    try {
+                        playerIn.playSound(SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.endermen.teleport")), 2, 1);
+                    } catch (Throwable t) {
+                    }
+                }else{
+                    playerIn.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Attempting to teleport in a different dimension would be a bad idea."));
+                }
             }catch(Exception e){
-                System.out.println("Something went horribly wrong.");
+                System.out.println("Player tried to teleport with a bad scroll or a sound attempted to crash the server.");
             }
         }else if(playerIn.isSneaking()){
-            //Get all of the positions and put them in an array
-            int[] positionArray = new int[]{ (int)playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ};
+            //Pass an array of the positions to reparse later.
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setIntArray("blockPos", positionArray);
+            tag.setIntArray("blockPos", new int[]{ (int)playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ});
+            tag.setInteger("dim", playerIn.dimension);
             itemStackIn.setTagCompound(tag);
+            playerIn.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Location has been set at X: " +
+                    (int)playerIn.posX + " Y: " + (int)playerIn.posY + " Z: " + (int)playerIn.posZ));
         }
         return new ActionResult(EnumActionResult.PASS, itemStackIn);
     }
@@ -67,14 +76,14 @@ public class ItemWarpScroll extends Item{
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        tooltip.add("No location set.");
+        tooltip.add("No location set. Right click while sneaking to set location.");
         try {
             if(stack.getTagCompound() == null){
                 return;
             }else {
                 int[] pos = stack.getTagCompound().getIntArray("blockPos");
                 if (pos != null) {
-                    tooltip.set(1, "X: " + pos[0] + " Y: " + pos[1] + " Z: " + pos[2]);
+                    tooltip.set(1, "X: " + pos[0] + " Y: " + pos[1] + " Z: " + pos[2] + ". Right-click while sneaking to set again.");
                 }
             }
         } catch (Exception e) {

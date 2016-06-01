@@ -16,9 +16,9 @@ public class InitItems {
     }
 
     public static void recipes(){
-        ItemStack paperStack = new ItemStack(Items.paper);
-        ItemStack pearlStack = new ItemStack(Items.ender_pearl);
-
+        ItemStack paperStack = new ItemStack(Items.PAPER);
+        ItemStack pearlStack = new ItemStack(Items.ENDER_PEARL);
+        ItemStack warpStack = new ItemStack(InitItems.itemWarpScroll);
         GameRegistry.addRecipe(new ItemStack(InitItems.itemWarpScroll),
                 "xxx",
                 "xyx",
