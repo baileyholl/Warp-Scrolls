@@ -25,16 +25,17 @@ import java.util.List;
 public class ItemWarpScroll extends Item{
 
     public ItemWarpScroll() {
-        setUnlocalizedName("itemWarpScroll");
-        setRegistryName("itemWarpScroll");
+        setUnlocalizedName("item_warp_scroll");
+        setRegistryName("item_warp_scroll");
         setMaxStackSize(1);
         setMaxDamage(1);
         setCreativeTab(CreativeTabs.COMBAT);
         GameRegistry.register(this);
     }
-
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
+        ItemStack itemStackIn = playerIn.getHeldItem(handIn);
         if(!playerIn.isSneaking() && itemStackIn.getTagCompound().getIntArray("blockPos") != null){
             int[] positionArray = itemStackIn.getTagCompound().getIntArray("blockPos");
             try {
@@ -47,7 +48,7 @@ public class ItemWarpScroll extends Item{
                     } catch (Throwable t) {
                     }
                 }else{
-                    playerIn.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Attempting to teleport in a different dimension would be a bad idea."));
+                    playerIn.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Attempting to teleport in a different dimension would be a bad idea."), true);
                 }
             }catch(Exception e){
                 System.out.println("Player tried to teleport with a bad scroll or a sound attempted to crash the server.");
@@ -59,9 +60,9 @@ public class ItemWarpScroll extends Item{
             tag.setInteger("dim", playerIn.dimension);
             itemStackIn.setTagCompound(tag);
             playerIn.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Location has been set at X: " +
-                    (int)playerIn.posX + " Y: " + (int)playerIn.posY + " Z: " + (int)playerIn.posZ));
+                    (int)playerIn.posX + " Y: " + (int)playerIn.posY + " Z: " + (int)playerIn.posZ), true);
         }
-        return new ActionResult(EnumActionResult.PASS, itemStackIn);
+        return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
     }
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
     {
