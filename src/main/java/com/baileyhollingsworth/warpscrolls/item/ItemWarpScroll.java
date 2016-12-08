@@ -1,4 +1,4 @@
-package com.drasticdemise.warpscrolls.item;
+package com.baileyhollingsworth.warpscrolls.item;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;

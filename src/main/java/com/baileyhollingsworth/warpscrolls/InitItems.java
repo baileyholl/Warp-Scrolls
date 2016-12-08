@@ -1,6 +1,6 @@
-package com.drasticdemise.warpscrolls;
+package com.baileyhollingsworth.warpscrolls;
 
-import com.drasticdemise.warpscrolls.item.ItemWarpScroll;
+import com.baileyhollingsworth.warpscrolls.item.ItemWarpScroll;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;

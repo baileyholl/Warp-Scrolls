@@ -1,4 +1,4 @@
-package com.drasticdemise.warpscrolls;
+package com.baileyhollingsworth.warpscrolls;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
